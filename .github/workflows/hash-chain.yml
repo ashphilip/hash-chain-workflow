@@ -1,0 +1,24 @@
+name: Hash Chain
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  hash-chain:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Compute hash chain a41113ec
+        env:
+          MY_SECRET: ${{ secrets.MY_SECRET }}
+        run: |
+          HASH=$(echo -n "${MY_SECRET}github-verified" | sha256sum | cut -c1-10)
+          echo "verify_hash=$HASH" >> $GITHUB_ENV
+          echo "$HASH" > verify_hash.txt
+          echo "Hash: $HASH"
+
+      - name: Upload artifact verify-hash-a41113ec
+        uses: actions/upload-artifact@v4
+        with:
+          name: verify-hash-a41113ec
+          path: verify_hash.txt
